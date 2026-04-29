@@ -31,9 +31,9 @@ const useUserApi = (): UseQueryResult<IServerResponse<IUser>, Error> => {
 }
 
 export const App: React.FC = () => {
-    const { data, error, isLoading } = useUserApi()
+    const { data, error, isPending } = useUserApi()
 
-    if (isLoading) {
+    if (isPending) {
         return <div>Loading...</div>
     }
 

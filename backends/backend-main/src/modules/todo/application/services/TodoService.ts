@@ -7,7 +7,7 @@ export class TodoService {
     constructor(private readonly todoRepository: TodoRepository) { }
 
     async createTodo(title: string): Promise<TodoEntity> {
-        return await this.todoRepository.createTodo({title} as TodoEntity)
+        return await this.todoRepository.createTodo({ title } as TodoEntity)
     }
 
     async getTodoById(id: number): Promise<TodoEntity | null> {
