@@ -1,7 +1,7 @@
-import {IsEmpty, IsString} from 'class-validator'
+import {IsNotEmpty, IsString} from 'class-validator'
 
 export class TodoDto {
-  @IsEmpty()
+  @IsNotEmpty()
   @IsString()
   title: string
 }

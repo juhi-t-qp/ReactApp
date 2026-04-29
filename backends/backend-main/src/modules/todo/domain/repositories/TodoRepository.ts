@@ -24,4 +24,11 @@ export class TodoRepository {
   async getTodoById(id: number): Promise<TodoEntity | null> {
     return this.todoRepository.findOne({where: {id}})
   }
+
+  async getAllTodos(page: number, pageSize: number): Promise<[TodoEntity[], number]> {
+    return this.todoRepository.findAndCount({
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    })
+  }
 }

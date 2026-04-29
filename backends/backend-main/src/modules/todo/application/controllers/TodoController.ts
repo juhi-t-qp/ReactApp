@@ -1,29 +1,32 @@
-import {Body, Get, Param, ParseIntPipe, Post} from '@nestjs/common'
-import {Controller} from '@nestjs/common/decorators/core/controller.decorator'
-import {TodoDto} from '../dtos/TodoDto'
-import {TodoService} from '../services/TodoService'
-import { ITodo } from '../types/ITodo'
+import { Body, Get, Param, ParseIntPipe, Post, Query } from '@nestjs/common'
+import { Controller } from '@nestjs/common/decorators/core/controller.decorator'
+import { TodoDto } from '../dtos/TodoDto'
+import { TodoService } from '../services/TodoService'
 
 @Controller('todos')
 export class TodoController {
-  private readonly todos: ITodo[] = []
-  constructor(private readonly todoService: TodoService) {}
-  @Get(':id')
-  getTodo(@Param('id') id: string): string {
-    const todo = this.todos.find(todo => todo.id === parseInt(id, 10))
-    if (!todo) {
-      return `Todo with ID ${id} not found`
+    constructor(private readonly todoService: TodoService) { }
+    @Get(':id')
+    async getTodo(@Param('id') id: string) {
+        const todo = await this.todoService.getTodoById(parseInt(id, 10))
+        if (!todo) {
+            return { data: null, message: `Todo with ID ${id} not found` }
+        }
+        return { data: todo, message: 'Todo fetched successfully' }
     }
-    return `Todo found: ${JSON.stringify(todo)}`
-  }
 
-  @Post()
-  createTodo(@Body() todoDto: TodoDto): string {
-    const newTodo: ITodo = {
-      id: this.todos.length + 1,
-      title: todoDto.title,
+    @Post()
+    async createTodo(@Body() todoDto: TodoDto) {
+        const newTodo = await this.todoService.createTodo(todoDto.title)
+        return { data: newTodo, message: 'Todo created successfully' }
     }
-    this.todos.push(newTodo)
-    return `Todo created successfully : ${JSON.stringify(newTodo)}`
-  }
+
+    @Get()
+    async getAllTodos(
+        @Query('page', ParseIntPipe) page: number,
+        @Query('pageSize', ParseIntPipe) pageSize: number,
+    ) {
+        const result = await this.todoService.getAllTodos(page, pageSize)
+        return { data: result, message: 'Todos fetched successfully' }
+    }
 }
